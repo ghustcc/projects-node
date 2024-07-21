@@ -1,46 +1,23 @@
-//  dotenv
+//  Conexão com dotenv para buscar TOKEN, CLIENT_ID e GUILD_ID
 require('dotenv').config()
 const { TOKEN, CLIENT_ID, GUILD_ID } = process.env
-
+// Defino uma API REST dos discord.js e as rotas de conexão com meu servidor e o bot
 const { REST, Routes } = require('discord.js')
+//  Importando acesso aos arquivos e diretórios
+const acess_commands = require('./acess-commands');
 
-//  Importar commands / ler arquivos e pastas
-const fs = require('node:fs') // Trabalha com arquivos
-const path = require('node:path') // Trabalha com rotas e diretórios
-const commandsPath = path.join(__dirname, "commands") // Acessa a pasta desejada
-const commandsFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')) // Coleta os arquivos da pasta e filtra
-
-const commands = []
-
-for (const file of  commandsFiles){
-    const filePath = path.join(commandsPath, file)
-    const command = require(filePath)
-
-    //  Armazenar os command em um tipo de dado para acessar por chave (Name - definido como setName no command)
-    if (command.data && command.execute) {
-        commands.push(command.data.toJSON())
-        // commands.push({
-        //     name: command.data.name,
-        //     description: command.data.description
-        // })
-    } else {
-        console.log(`Esse comando em ${filePath} está com data ou execute indefinidos`);
-    }
-}
-
-console.log(commands)
-
-//  Instância REST para fazer requisições, pois é uma API
+//  Instância REST para fazer requisições ao Bot, pois é uma API
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
+//  Função assincrona que irá se comunicar com o Bot e o Server
 (async () => {
     try {
-      console.log('Started refreshing application (/) commands.')
+      console.log('Tentando enviar os (/) commands através de uma requisição HTTP (PUT - alterar informações da paleta de comandos do Bot)...')
     
-      await rest.put(Routes.applicationCommands(CLIENT_ID, GUILD_ID), { body: commands })
+      await rest.put(Routes.applicationCommands(CLIENT_ID, GUILD_ID), { body: acess_commands.commands_deploy })
     
-      console.log('Successfully reloaded application (/) commands.')
+      console.log('Aplicação dos (/) commands bem sucedida.')
     } catch (error) {
-      console.error(error)
+      console.error('Erro: ',error)
     }
 })()

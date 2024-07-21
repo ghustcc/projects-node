@@ -3,13 +3,13 @@ const { SlashCommandBuilder } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('ping')
-        .setDescription('Responde: Pong!'),
+        .setName('spotify')
+        .setDescription('Playlist do spotify para relaxar'),
 
     async execute(interaction) {
         //  Acesso através do setName (input de fato)
-        if (interaction.commandName === 'ping') {
-            await interaction.reply('Pong!');
+        if (interaction.commandName === 'spotify') {
+            await interaction.reply('https://open.spotify.com/playlist/4eWBwGl0c5wtp6k5Krp6My');
         }
     }
 }
